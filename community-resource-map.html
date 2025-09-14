@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Resource Map</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- ADD THIS LINE for the routing machine's styles -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="map"></div>
+    <button id="add-resource-btn">+</button>
+
+    <div id="form-modal" class="modal">
+        <div class="modal-content">
+            <h3>Add a New Resource</h3>
+            <form id="resource-form">
+                <label for="type">Resource Type:</label>
+                <select id="type" name="type" required>
+                    <option value="">--Please choose an option--</option>
+                    <option value="Food Drive">Food Drive</option>
+                    <option value="Water Spigot">Water Spigot</option>
+                    <option value="Electrical Outlet">Electrical Outlet</option>
+                    <option value="Shower">Shower</option>
+                    <option value="Camping Area">Camping Area</option>
+                    <option value="WiFi Hotspot">WiFi Hotspot</option>
+                    <option value="Donation Center">Donation Center</option>
+                    <option value="Charity Event">Charity Event</option>
+                    <option value="Homeless Assistance">Homeless Assistance</option>
+                    <option value="Yard/Garage Sale">Yard/Garage Sale</option>
+                    <option value="Storage Auction">Storage Auction</option>
+                </select>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+                <div class="button-group">
+                    <button type="submit">Add to Map</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
+    <!-- ADD THIS LINE for the routing machine's code -->
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+              .then(reg => console.log('Service worker registered.'))
+              .catch(err => console.log('Service worker registration failed: ', err));
+          });
+        }
+    </script>
+
+</body>
+</html>
+
+

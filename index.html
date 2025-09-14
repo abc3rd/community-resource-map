@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Connect Resource Hub</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cloud-sun"></i>
+                <span>Cloud Connect Hub</span>
+            </div>
+        </header>
+        
+        <div id="map-container">
+            <div id="map"></div>
+            
+            <div id="controls">
+                <button id="current-location-btn" title="My Location">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+                <button id="add-resource-btn" title="Add Resource">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="legend">
+                <h3>Resource Types</h3>
+                <!-- Legend items will be dynamically added by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div id="form-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add a New Resource</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="resource-form">
+                <div class="form-group">
+                    <label for="type">Resource Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="">--Please choose an option--</option>
+                        <!-- Options will be dynamically added by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="e.g., Outlet is on the library's back wall..." required></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Add to Map</button>
+                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
+    <script src="app.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js');
+          });
+        }
+    </script>
+</body>
+</html>
+

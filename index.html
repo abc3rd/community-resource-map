@@ -8,13 +8,35 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+      .star-rating {
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        text-align: left;
+      }
+      .star-rating > span {
+        display: inline-block;
+        position: relative;
+        width: 1.1em;
+        font-size: 20px;
+        color: gold;
+        cursor: pointer;
+      }
+      .star-rating > span:hover,
+      .star-rating > span:hover ~ span {
+        color: #ffc107;
+      }
+      .star-rating-display {
+        direction: ltr;
+      }
+    </style>
 </head>
 <body>
     <div id="app-container">
         <header>
             <div class="logo">
-                <i class="fas fa-cloud-sun"></i>
-                <span>Cloud Connect Hub</span>
+                <img src="icon-512.png" alt="Logo" width="40">
+                Cloud Connect
             </div>
         </header>
         
@@ -32,8 +54,7 @@
             
             <div class="legend">
                 <h3>Resource Types</h3>
-                <!-- Legend items will be dynamically added by JavaScript -->
-            </div>
+                </div>
         </div>
     </div>
 
@@ -45,18 +66,29 @@
             </div>
             <form id="resource-form">
                 <div class="form-group">
+                    <label for="resource-name">Resource Name:</label>
+                    <input type="text" id="resource-name" name="resource-name" placeholder="e.g., Publix Community Table" required>
+                </div>
+                <div class="form-group">
                     <label for="type">Resource Type:</label>
                     <select id="type" name="type" required>
                         <option value="">--Please choose an option--</option>
-                        <!-- Options will be dynamically added by JavaScript -->
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="4" placeholder="e.g., Outlet is on the library's back wall..." required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="operating-hours">Operating Hours:</label>
+                    <textarea id="operating-hours" name="operating-hours" rows="2" placeholder="e.g., 24/7 or Mon-Fri 9am-5pm"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="accessibility">Accessibility Notes:</label>
+                    <textarea id="accessibility" name="accessibility" rows="2" placeholder="e.g., Wheelchair accessible, stairs required, etc."></textarea>
+                </div>
                 <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Add to Map</button>
+                    <button type="submit" class="btn btn-primary">Share with Community</button>
                     <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
                 </div>
             </form>
@@ -64,7 +96,6 @@
     </div>
 
     <div id="toast" class="toast">
-        <i class="fas fa-check-circle"></i>
         <span id="toast-message"></span>
     </div>
 
@@ -83,4 +114,3 @@
     </script>
 </body>
 </html>
-

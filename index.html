@@ -29,6 +29,26 @@
       .star-rating-display {
         direction: ltr;
       }
+      #message-center {
+        background-color: var(--light);
+        color: var(--dark);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        box-shadow: var(--box-shadow);
+        transition: all 0.3s ease;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      #message-center.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .message-success { background-color: #d4edda; color: #155724; }
+      .message-error { background-color: #f8d7da; color: #721c24; }
+      .message-info { background-color: #cce5ff; color: #004085; }
     </style>
 </head>
 <body>
@@ -38,6 +58,7 @@
                 <img src="icon-512.png" alt="Logo" width="40">
                 Cloud Connect
             </div>
+            <div id="message-center"></div>
         </header>
         
         <div id="map-container">
@@ -62,7 +83,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Add a New Resource</h2>
-                <button class="close-btn">&times;</button>
+                <button class="close-btn">×</button>
             </div>
             <form id="resource-form">
                 <div class="form-group">
@@ -104,13 +125,5 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
     <script src="app.js"></script>
-    <script src="ui.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('service-worker.js');
-          });
-        }
-    </script>
 </body>
 </html>

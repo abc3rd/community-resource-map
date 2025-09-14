@@ -36,6 +36,27 @@ header {
 .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; }
 .logo img { height: 40px; width: 40px; }
 
+#message-center {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #212529;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+#message-center.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+.message-success { background-color: #d4edda; color: #155724; }
+.message-error { background-color: #f8d7da; color: #721c24; }
+.message-info { background-color: #cce5ff; color: #004085; }
+
 #map-container { flex: 1; position: relative; }
 #map { height: 100%; width: 100%; }
 

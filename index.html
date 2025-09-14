@@ -8,82 +8,131 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-      .star-rating {
-        unicode-bidi: bidi-override;
-        direction: rtl;
-        text-align: left;
-      }
-      .star-rating > span {
-        display: inline-block;
-        position: relative;
-        width: 1.1em;
-        font-size: 20px;
-        color: gold;
-        cursor: pointer;
-      }
-      .star-rating > span:hover,
-      .star-rating > span:hover ~ span {
-        color: #ffc107;
-      }
-      .star-rating-display {
-        direction: ltr;
-      }
-      #message-center {
-        background-color: var(--light);
-        color: var(--dark);
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        box-shadow: var(--box-shadow);
-        transition: all 0.3s ease;
-        visibility: hidden;
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      #message-center.show {
-        visibility: visible;
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .message-success { background-color: #d4edda; color: #155724; }
-      .message-error { background-color: #f8d7da; color: #721c24; }
-      .message-info { background-color: #cce5ff; color: #004085; }
-    </style>
 </head>
 <body>
     <div id="app-container">
         <header>
             <div class="logo">
-                <img src="icon-512.png" alt="Logo" width="40">
+                <i class="fas fa-cloud"></i>
                 Cloud Connect
             </div>
-            <div id="message-center"></div>
+            <div class="header-controls">
+                <div id="user-profile" class="user-profile" style="display: none;">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-name">User</span>
+                    <span id="trust-badge" class="trust-badge" style="display: none;">Trusted</span>
+                    <span id="establishment-badge" class="establishment-badge" style="display: none;">Organization</span>
+                </div>
+                <button id="auth-btn" class="btn btn-secondary">Sign In</button>
+            </div>
         </header>
         
         <div id="map-container">
             <div id="map"></div>
             
             <div id="controls">
-                <button id="current-location-btn" title="My Location">
+                <button id="current-location-btn" class="control-btn btn-secondary" title="My Location">
                     <i class="fas fa-location-arrow"></i>
                 </button>
-                <button id="add-resource-btn" title="Add Resource">
+                <button id="add-resource-btn" class="control-btn btn-primary" title="Add Resource">
                     <i class="fas fa-plus"></i>
+                </button>
+                <button id="profile-btn" class="control-btn btn-secondary" title="My Profile" style="display: none;">
+                    <i class="fas fa-user"></i>
                 </button>
             </div>
             
             <div class="legend">
                 <h3>Resource Types</h3>
+                <div id="legend-items"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Cloud Connect</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="auth-form-container">
+                <div class="account-type-selector">
+                    <h3>Account Type</h3>
+                    <div class="account-type-option">
+                        <input type="radio" name="accountType" value="individual" id="individual" checked>
+                        <label for="individual">
+                            <strong>Individual User</strong><br>
+                            <small>Share and discover community resources</small>
+                        </label>
+                    </div>
+                    <div class="account-type-option">
+                        <input type="radio" name="accountType" value="organization" id="organization">
+                        <label for="organization">
+                            <strong>Organization/Establishment</strong><br>
+                            <small>Manage official events and verified resources</small>
+                        </label>
+                    </div>
                 </div>
+
+                <form id="auth-form-signup">
+                    <div class="form-group">
+                        <label for="auth-email">Email:</label>
+                        <input type="email" id="auth-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Password:</label>
+                        <input type="password" id="auth-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="display-name">Display Name:</label>
+                        <input type="text" id="display-name" name="displayName" required>
+                    </div>
+                    <div id="organization-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="org-name">Organization Name:</label>
+                            <input type="text" id="org-name" name="orgName">
+                        </div>
+                        <div class="form-group">
+                            <label for="org-type">Organization Type:</label>
+                            <select id="org-type" name="orgType">
+                                <option value="">Select type</option>
+                                <option value="church">Church/Religious</option>
+                                <option value="charity">Charity/Non-profit</option>
+                                <option value="government">Government</option>
+                                <option value="business">Local Business</option>
+                                <option value="community">Community Group</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                        <button type="button" id="switch-to-signin" class="btn btn-secondary">Sign In Instead</button>
+                    </div>
+                </form>
+
+                <form id="auth-form-signin" style="display: none;">
+                    <div class="form-group">
+                        <label for="signin-email">Email:</label>
+                        <input type="email" id="signin-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signin-password">Password:</label>
+                        <input type="password" id="signin-password" name="password" required>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                        <button type="button" id="switch-to-signup" class="btn btn-secondary">Create Account</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <div id="form-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add a New Resource</h2>
-                <button class="close-btn">×</button>
+                <h2>Add New Resource</h2>
+                <button class="close-btn">&times;</button>
             </div>
             <form id="resource-form">
                 <div class="form-group">
@@ -93,26 +142,62 @@
                 <div class="form-group">
                     <label for="type">Resource Type:</label>
                     <select id="type" name="type" required>
-                        <option value="">--Please choose an option--</option>
+                        <option value="">--Select resource type--</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4" placeholder="e.g., Outlet is on the library's back wall..." required></textarea>
+                    <textarea id="description" name="description" rows="3" placeholder="Detailed description of the resource..." required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="operating-hours">Operating Hours:</label>
-                    <textarea id="operating-hours" name="operating-hours" rows="2" placeholder="e.g., 24/7 or Mon-Fri 9am-5pm"></textarea>
+                    <input type="text" id="operating-hours" name="operating-hours" placeholder="e.g., 24/7 or Mon-Fri 9am-5pm">
+                </div>
+                <div class="form-group">
+                    <label for="contact-info">Contact Information:</label>
+                    <input type="text" id="contact-info" name="contact-info" placeholder="Phone, email, or website">
                 </div>
                 <div class="form-group">
                     <label for="accessibility">Accessibility Notes:</label>
-                    <textarea id="accessibility" name="accessibility" rows="2" placeholder="e.g., Wheelchair accessible, stairs required, etc."></textarea>
+                    <textarea id="accessibility" name="accessibility" rows="2" placeholder="Wheelchair accessible, special accommodations, etc."></textarea>
                 </div>
                 <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Share with Community</button>
+                    <button type="submit" class="btn btn-primary">Share Resource</button>
                     <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Profile</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="profile-content">
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="resources-added">0</div>
+                        <div class="stat-label">Resources Added</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="verifications-made">0</div>
+                        <div class="stat-label">Verifications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="trust-score">0</div>
+                        <div class="stat-label">Trust Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="comments-posted">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="logout-btn" class="btn btn-secondary">Sign Out</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -121,9 +206,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

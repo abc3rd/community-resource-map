@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------------------------------------------
+        USER PROFILES
+        --------------------------------------------- */
+    // Each user can read/write *only* their own profile document.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    /* ---------------------------------------------
+        RESOURCES (top-level collection)
+        --------------------------------------------- */
+    // Anyone can read resources. Authenticated users can create.
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null; // Allows any authenticated user to update for features like verification
+      allow delete: if request.auth != null && request.auth.uid == resource.data.createdBy;
+    }
+
+    /* ---------------------------------------------
+        COMMENTS & RATINGS (sub-collections)
+        --------------------------------------------- */
+    // Anyone can read comments/ratings. Authenticated users can create.
+    match /resources/{resourceId}/{commentOrRating}/{docId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+    }
+  }
+}

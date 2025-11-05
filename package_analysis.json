@@ -1,0 +1,22 @@
+{
+  "name": "codebase-analyzer",
+  "version": "1.0.0",
+  "description": "Advanced codebase feature analyzer for Cloud Connect, Glytch, and Go High Level",
+  "main": "analyze_codebase.js",
+  "scripts": {
+    "analyze": "node analyze_codebase.js"
+  },
+  "dependencies": {
+    "glob": "^10.3.10",
+    "@babel/parser": "^7.23.9",
+    "@babel/traverse": "^7.23.9"
+  },
+  "keywords": [
+    "codebase",
+    "analysis",
+    "ast",
+    "code-migration"
+  ],
+  "author": "",
+  "license": "MIT"
+}

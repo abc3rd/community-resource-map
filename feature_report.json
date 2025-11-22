@@ -1,0 +1,114 @@
+[
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "getCurrentLocation",
+    "line": 112,
+    "reason": "High complexity: 35 lines",
+    "codeSnippet": "function getCurrentLocation() {\n    if (navigator.geolocation) {\n        navigator.geolocation.getCurrentPosition(\n            position => {\n                userLocation = {\n                    lat: position.coords.latitude,\n                    lng: position.coords.longitude\n                };\n                \n                map.setView([userLocation.lat, userLocation.lng], 15);\n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "createResourcePopup",
+    "line": 194,
+    "reason": "High complexity: 59 lines",
+    "codeSnippet": "function createResourcePopup(resource, id) {\n    const isOwner = currentUser && resource.createdBy === currentUser.uid;\n    const canVerify = currentUser && !isOwner;\n    \n    const popupDiv = document.createElement('div');\n    popupDiv.innerHTML = `\n        <div style=\"min-width: 280px; max-width: 350px;\">\n            <h3 style=\"color: ${resourceTypes[resource.type]?.color || '#666'}; margin-bottom: 8px;\">\n                ${resource.name}\n            </h3>\n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "addComment",
+    "line": 301,
+    "reason": "High complexity: 32 lines",
+    "codeSnippet": "function addComment(resourceId, button) {\n    if (!currentUser) {\n        showToast('Please sign in to post comments', 'error');\n        return;\n    }\n    \n    const input = button.previousElementSibling;\n    const text = input.value.trim();\n    \n    if (!text) return;\n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "verifyResource",
+    "line": 336,
+    "reason": "High complexity: 33 lines",
+    "codeSnippet": "function verifyResource(resourceId) {\n    if (!currentUser) {\n        showToast('Please sign in to verify resources', 'error');\n        return;\n    }\n    \n    const resourceRef = doc(db, 'resources', resourceId);\n    \n    getDoc(resourceRef).then(docSnap => {\n        if (docSnap.exists()) {\n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "setupEventListeners",
+    "line": 439,
+    "reason": "High complexity: 107 lines",
+    "codeSnippet": "function setupEventListeners() {\n    // Auth modal\n    elements.authBtn.addEventListener('click', () => {\n        if (currentUser) {\n            signOut(auth);\n        } else {\n            elements.authModal.style.display = 'block';\n        }\n    });\n    \n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "handleAuthSubmit",
+    "line": 548,
+    "reason": "High complexity: 40 lines",
+    "codeSnippet": "async function handleAuthSubmit(e) {\n    e.preventDefault();\n    \n    const formData = new FormData(e.target);\n    const email = formData.get('email');\n    const password = formData.get('password');\n    const displayName = formData.get('displayName');\n    const accountType = formData.get('accountType');\n    \n    try {\n// ... (truncated)"
+  },
+  {
+    "filePath": "app.js",
+    "type": "Function",
+    "name": "handleResourceSubmit",
+    "line": 590,
+    "reason": "High complexity: 44 lines",
+    "codeSnippet": "async function handleResourceSubmit(e) {\n    e.preventDefault();\n    \n    if (!selectedLocation) {\n        showToast('Please select a location on the map first!', 'error');\n        return;\n    }\n\n    const formData = new FormData(e.target);\n    \n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "hasSpecialComment",
+    "line": 71,
+    "reason": "Body contains keyword: CloudConnect",
+    "codeSnippet": "function hasSpecialComment(comments) {\n  const markers = ['@advanced', '@feature', '@CloudConnect', '@Glytch'];\n  for (const marker of markers) {\n    if (comments.includes(marker)) {\n      return marker;\n    }\n  }\n  return null;\n}"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "findApiCalls",
+    "line": 84,
+    "reason": "Name contains keyword: API | Body contains keyword: API | High complexity: 34 lines",
+    "codeSnippet": "function findApiCalls(node, code) {\n  const apiCalls = [];\n\n  try {\n    traverse(node, {\n      CallExpression(path) {\n        const callee = path.node.callee;\n\n        // Check for fetch()\n        if (callee.type === 'Identifier' && callee.name === 'fetch') {\n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Method",
+    "name": "CallExpression",
+    "line": 89,
+    "reason": "Body contains keyword: API",
+    "codeSnippet": "      CallExpression(path) {\n        const callee = path.node.callee;\n\n        // Check for fetch()\n        if (callee.type === 'Identifier' && callee.name === 'fetch') {\n          apiCalls.push('fetch');\n        }\n\n        // Check for axios.get, axios.post, etc.\n        if (callee.type === 'MemberExpression') {\n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "analyzeFunction",
+    "line": 137,
+    "reason": "Body contains keyword: API | High parameter count: 5 parameters | High complexity: 61 lines",
+    "codeSnippet": "function analyzeFunction(node, filePath, code, type, name) {\n  const reasons = [];\n  const loc = node.loc;\n\n  if (!loc) return null;\n\n  const line = loc.start.line;\n  const lineCount = loc.end.line - loc.start.line;\n\n  // Get node code\n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "analyzeClass",
+    "line": 203,
+    "reason": "Body contains keyword: API | High complexity: 50 lines",
+    "codeSnippet": "function analyzeClass(node, filePath, code) {\n  const reasons = [];\n  const loc = node.loc;\n\n  if (!loc) return null;\n\n  const line = loc.start.line;\n  const className = node.id ? node.id.name : 'AnonymousClass';\n\n  // Get node code\n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "analyzeFile",
+    "line": 258,
+    "reason": "High complexity: 81 lines",
+    "codeSnippet": "function analyzeFile(filePath) {\n  try {\n    const code = fs.readFileSync(filePath, 'utf-8');\n\n    // Parse with permissive settings\n    const ast = parser.parse(code, {\n      sourceType: 'module',\n      plugins: [\n        'jsx',\n        'typescript',\n// ... (truncated)"
+  },
+  {
+    "filePath": "analyze_codebase.js",
+    "type": "Function",
+    "name": "main",
+    "line": 344,
+    "reason": "High complexity: 80 lines",
+    "codeSnippet": "async function main() {\n  try {\n    // Build glob pattern\n    const patterns = FILE_EXTENSIONS.map(ext =>\n      `${START_DIRECTORY}/**/*${ext}`\n    );\n\n    // Find all matching files\n    let files = [];\n    for (const pattern of patterns) {\n// ... (truncated)"
+  }
+]

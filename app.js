@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInAnonymously, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile } from "firebase/auth";
 import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, query, where, arrayUnion, serverTimestamp, setDoc, increment } from "firebase/firestore";
+import { initializeChat, cleanupChat } from './chat-integration.js';
+import APIDashboard from './api-dashboard.js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -28,6 +30,11 @@ let markersLayer = null;
 let selectedLocation = null;
 let tempMarker = null;
 const markers = {};
+
+// Chat and API Dashboard instances (SSO integrated)
+let chatSystem = null;
+let chatUI = null;
+let apiDashboard = null;
 
 const resourceTypes = {
     "Food Drive": { color: "#f94144", icon: "fas fa-bread-slice" },
@@ -81,14 +88,47 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     populateResourceTypes();
     
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async user => {
         if (user) {
             currentUser = user;
             updateUIForAuthenticatedUser();
-            loadUserProfile();
+            await loadUserProfile();
+
+            // SSO Integration: Initialize Chat and API Dashboard with single login
+            try {
+                // Initialize Chat System
+                const chatResult = await initializeChat(db, auth, currentUser);
+                chatSystem = chatResult.chatSystem;
+                chatUI = chatResult.chatUI;
+                console.log('[SSO] Chat system initialized via SSO');
+
+                // Initialize API Dashboard
+                apiDashboard = new APIDashboard(db, currentUser);
+                await apiDashboard.initialize();
+                console.log('[SSO] API Dashboard initialized via SSO');
+
+                // Add API Dashboard button to header
+                addAPIDashboardButton();
+
+                showToast('Welcome! All systems connected via Single Sign-On', 'success');
+            } catch (error) {
+                console.error('[SSO] Failed to initialize systems:', error);
+                showToast('Some features may be unavailable', 'warning');
+            }
         } else {
             currentUser = null;
             updateUIForUnauthenticatedUser();
+
+            // Cleanup on logout
+            if (chatSystem) {
+                await cleanupChat();
+                chatSystem = null;
+                chatUI = null;
+            }
+            if (apiDashboard) {
+                apiDashboard = null;
+                removeAPIDashboardButton();
+            }
         }
     });
 });
@@ -679,17 +719,63 @@ function showToast(message, type = 'success') {
 
 function formatTimeAgo(timestamp) {
     if (!timestamp) return 'Unknown';
-    
+
     const now = new Date();
     const then = timestamp.toDate();
     const diffMs = now - then;
-    
+
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     return `${diffDays}d ago`;
 }
+
+// API Dashboard Integration Functions
+function addAPIDashboardButton() {
+    // Check if button already exists
+    if (document.getElementById('api-dashboard-btn')) return;
+
+    const headerControls = document.querySelector('.header-controls');
+    if (!headerControls) return;
+
+    const apiButton = document.createElement('button');
+    apiButton.id = 'api-dashboard-btn';
+    apiButton.className = 'btn btn-secondary';
+    apiButton.innerHTML = '<i class="fas fa-plug"></i> API';
+    apiButton.title = 'API Integration Dashboard';
+
+    apiButton.addEventListener('click', () => {
+        if (apiDashboard) {
+            apiDashboard.show();
+        }
+    });
+
+    // Insert before chat button if it exists, otherwise before auth button
+    const chatBtn = document.getElementById('chat-toggle-btn');
+    const authBtn = document.getElementById('auth-btn');
+    const insertBefore = chatBtn || authBtn;
+
+    if (insertBefore) {
+        headerControls.insertBefore(apiButton, insertBefore);
+    } else {
+        headerControls.appendChild(apiButton);
+    }
+}
+
+function removeAPIDashboardButton() {
+    const apiButton = document.getElementById('api-dashboard-btn');
+    if (apiButton) {
+        apiButton.remove();
+    }
+}
+
+// Listen for toast events from chat system
+window.addEventListener('showToast', (event) => {
+    if (event.detail) {
+        showToast(event.detail.message, event.detail.type);
+    }
+});

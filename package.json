@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babel/parser": "^7.28.5",
+    "@babel/parser": "^7.28.6",
     "@babel/traverse": "^7.28.5",
     "glob": "^11.0.3"
   }
